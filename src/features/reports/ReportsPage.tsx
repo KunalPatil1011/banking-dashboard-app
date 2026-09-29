@@ -1,571 +1,37 @@
-// export default function ReportsPage() {
-//   const cards = [
-//     {
-//       id: "breas",
-//       title: "Breas files",
-//       description: "View and manage your breas files",
-//       count: 12,
-//       icon: "📄",
-//       color: "bg-teal-500",
-//       badgeColor: "#DDF4EF",
-//       textColor: "#14B8A6",
-//     },
-//     {
-//       id: "arcs",
-//       title: "ARCS files",
-//       description: "Access ARCS related files",
-//       count: 11,
-//       icon: "📊",
-//       color: "bg-blue-500",
-//       badgeColor: "#E2ECFF",
-//       textColor: "#3B82F6",
-//     },
-//     {
-//       id: "processed",
-//       title: "Processed files",
-//       description: "Track and manage process",
-//       count: 17,
-//       icon: "⚙️",
-//       color: "bg-purple-500",
-//       badgeColor: "#F2E9FF",
-//       textColor: "#A855F7",
-//     },
-//   ];
-//   return (
-//     <div className="space-y-6">
-//       <div>
-//         <h1 className="text-2xl font-bold text-slate-900">Reports</h1>
-//       </div>
-//       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-//         {cards.map((card) => (
-//           <div
-//             key={card.id}
-//             className="group cursor-pointer rounded-3xl bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
-//           >
-//             <div
-//               className={`mb-8 flex h-16 w-16 items-center justify-center rounded-full ${card.color}`}
-//             >
-//               <span className="text-2xl text-white">{card.icon}</span>
-//             </div>
-//             <h2 className="text-[30px] font-semibold text-slate-800">
-//               {card.title}
-//             </h2>
-//             <p className="mt-2 text-slate-500">{card.description}</p>
-//             <div className="mt-8 flex items-center justify-between">
-//               <span
-//                 className="font-semibold"
-//                 style={{
-//                   color: card.textColor,
-//                 }}
-//               >
-//                 Download
-//               </span>
-//               <span
-//                 className="rounded-full px-4 py-1 text-sm"
-//                 style={{
-//                   backgroundColor: card.badgeColor,
-//                   color: card.textColor,
-//                 }}
-//               >
-//                 {card.count}
-//               </span>
-//             </div>
-//           </div>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// }
-
-// import { useMemo, useState } from "react";
-// import axios from "axios";
-// import {
-//   Alert,
-//   Box,
-//   Collapse,
-//   Typography,
-//   InputAdornment,
-//   TextField,
-// } from "@mui/material";
-// import type { GridColDef, GridRowsProp } from "@mui/x-data-grid";
-// import DataTable from "../../components/common/DataTable";
-// import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-
-// import AccountTreeIcon from "@mui/icons-material/AccountTree";
-// import FolderIcon from "@mui/icons-material/Folder";
-// import SettingsIcon from "@mui/icons-material/Settings";
-
-// type CardId = "breas" | "arcs" | "processed";
-
-// interface ReportCard {
-//   id: CardId;
-//   title: string;
-//   description: string;
-//   count: number;
-//   icon: string;
-//   color: string;
-//   badgeColor: string;
-//   textColor: string;
-//   apiUrl: string;
-// }
-
-// // interface ApiFileRecord {
-// //   id?: string | number;
-// //   fileName?: string;
-// //   name?: string;
-// //   fileType?: string;
-// //   status?: string;
-// //   createdAt?: string;
-// //   uploadedAt?: string;
-// // }
-
-// // interface FileTableRow {
-// //   id: string | number;
-// //   fileName: string;
-// //   fileType: string;
-// //   status: string;
-// //   createdAt: string;
-// // }
-
-// interface ApiUserRecord {
-//   id: string;
-//   name: string;
-//   email: string;
-//   password: string;
-//   role: string;
-// }
-
-// const cards: ReportCard[] = [
-//   {
-//     id: "breas",
-//     title: "Brues files",
-//     description: "View and manage your breas files",
-//     count: 12,
-//     icon: <FolderIcon sx={{ fontSize: 34 }} />,
-//     bgColor: "#059b7f",
-//     borderColor: "border-emerald-300/40",
-//     iconBorderColor: "#059b7f",
-//     blobColor: "rgba(5, 155, 127, 0.08)",
-//     badgeColor: "#D1FAE5",
-//     badgeTextColor: "#059b7f",
-//     textColor: "#059b7f",
-//     cardBg: "rgba(240, 253, 250)",
-
-//     apiUrl:
-//       "https://6aa26491ccb3db9689a66ef8.mockapi.io/api/response/bot/users",
-//   },
-//   {
-//     id: "arcs",
-//     title: "ARCS files",
-//     description: "Access ARCS related files",
-//     count: 11,
-//     icon: <AccountTreeIcon sx={{ fontSize: 34 }} />,
-//     bgColor: "#4fa4fb",
-//     borderColor: "border-sky-300/40",
-//     iconBorderColor: "#4fa4fb",
-//     blobColor: "rgba(79, 164, 251, 0.08)",
-//     badgeColor: "#DBF1FF",
-//     badgeTextColor: "#4fa4fb",
-//     textColor: "#4fa4fb",
-//     cardBg: "rgba(242, 249, 255)",
-
-//     apiUrl: "https://YOUR-PROJECT.mockapi.io/api/v1/arcs",
-//   },
-//   {
-//     id: "processed",
-//     title: "Processed files",
-//     description: "Track and manage process",
-//     count: 17,
-//     icon: <SettingsIcon sx={{ fontSize: 34 }} />,
-//     bgColor: "#9761ed",
-//     borderColor: "border-violet-300/40",
-//     iconBorderColor: "#9761ed",
-//     blobColor: "rgba(151, 97, 237, 0.08)",
-//     badgeColor: "#EDE9FF",
-//     badgeTextColor: "#9761ed",
-//     textColor: "#9761ed",
-//     cardBg: "rgba(246, 245, 252)",
-
-//     // Replace with your MockAPI URL
-//     apiUrl: "https://YOUR-PROJECT.mockapi.io/api/v1/processed",
-//   },
-// ];
-
-// const columns: GridColDef<ApiUserRecord>[] = [
-//   {
-//     field: "id",
-//     headerName: "ID",
-//     width: 90,
-//   },
-//   {
-//     field: "name",
-//     headerName: "Name",
-//     minWidth: 180,
-//     flex: 1,
-//   },
-//   {
-//     field: "email",
-//     headerName: "Email Address",
-//     minWidth: 230,
-//     flex: 1,
-//   },
-//   {
-//     field: "role",
-//     headerName: "Role",
-//     minWidth: 150,
-//     flex: 0.5,
-//   },
-// ];
-
-// export default function ReportsPage() {
-//   const [selectedCard, setSelectedCard] = useState<CardId | null>(null);
-
-//   const [selectedCardTitle, setSelectedCardTitle] = useState("");
-
-//   const [rows, setRows] = useState<GridRowsProp<ApiUserRecord>>([]);
-
-//   const [loading, setLoading] = useState(false);
-
-//   const [error, setError] = useState<string | null>(null);
-
-//   const [searchText, setSearchText] = useState("");
-
-//   const handleCardClick = async (card: ReportCard) => {
-//     try {
-//       setSelectedCard(card.id);
-//       setSelectedCardTitle(card.title);
-//       setSearchText("");
-//       setRows([]);
-//       setError(null);
-//       setLoading(true);
-
-//       const response = await axios.get<ApiUserRecord[]>(card.apiUrl);
-//       console.log(response, "response from mock api");
-//       if (!Array.isArray(response.data)) {
-//         throw new Error("The API response is not a valid list.");
-//       }
-
-//       const formattedRows: ApiUserRecord[] = response.data.map(
-//         (user, index) => ({
-//           id: user.id ?? index + 1,
-//           name: user.name ?? user.name,
-//           email: user.email,
-//           //   status: user.status ?? "Pending",
-//           //   createdAt: record.createdAt ?? record.uploadedAt ?? "-",
-//         }),
-//       );
-
-//       setRows(formattedRows);
-//     } catch (error: unknown) {
-//       setRows([]);
-
-//       if (axios.isAxiosError(error)) {
-//         if (error.response?.status === 404) {
-//           setError(`${card.title} API endpoint was not found.`);
-//         } else if (!error.response) {
-//           setError("Unable to connect to the file service.");
-//         } else {
-//           setError(
-//             error.response?.data?.message ?? "Unable to load file records.",
-//           );
-//         }
-//       } else if (error instanceof Error) {
-//         setError(error.message);
-//       } else {
-//         setError("An unexpected error occurred.");
-//       }
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const filteredRows = useMemo(() => {
-//     const normalizedSearch = searchText.trim().toLowerCase();
-
-//     if (!normalizedSearch) {
-//       return rows;
-//     }
-
-//     return rows.filter((user) => {
-//       const normalizedName = user.name?.toLowerCase() ?? "";
-
-//       const normalizedEmail = user.email?.toLowerCase() ?? "";
-
-//       return (
-//         normalizedName.includes(normalizedSearch) ||
-//         normalizedEmail.includes(normalizedSearch)
-//       );
-//     });
-//   }, [rows, searchText]);
-
-//   return (
-//     <div className="space-y-6">
-//       <div>
-//         <h1 className="text-2xl font-bold text-slate-900">Reports</h1>
-
-//         <p className="mt-1 text-sm text-slate-500">
-//           Select a card to view the corresponding file records.
-//         </p>
-//       </div>
-
-//       {/* Cards */}
-
-//       <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-//         {cards.map((card) => {
-//           const isSelected = selectedCard === card.id;
-
-//           return (
-//             <button
-//               key={card.id}
-//               type="button"
-//               onClick={() => handleCardClick(card)}
-//               className={`
-//                 group
-//                 cursor-pointer
-//                 rounded-3xl
-//                 bg-white
-//                 p-8
-//                 text-left
-//                 shadow-sm
-//                 transition-all
-//                 duration-300
-//                 hover:-translate-y-2
-//                 hover:shadow-xl
-//                 focus:outline-none
-//                 focus:ring-4
-//                 focus:ring-teal-500/20
-
-//                 ${isSelected ? "ring-2 ring-teal-500 shadow-lg" : ""}
-//               `}
-//             >
-//               <div
-//                 className={`
-//                   mb-8
-//                   flex
-//                   h-16
-//                   w-16
-//                   items-center
-//                   justify-center
-//                   rounded-full
-//                   ${card.color}
-//                 `}
-//               >
-//                 <span className="text-2xl text-white">{card.icon}</span>
-//               </div>
-
-//               <h2 className="text-[30px] font-semibold text-slate-800">
-//                 {card.title}
-//               </h2>
-
-//               <p className="mt-2 text-slate-500">{card.description}</p>
-
-//               <div className="mt-8 flex items-center justify-between">
-//                 <span
-//                   className="font-semibold"
-//                   style={{
-//                     color: card.textColor,
-//                   }}
-//                 >
-//                   View files
-//                 </span>
-
-//                 <span
-//                   className="rounded-full px-4 py-1 text-sm"
-//                   style={{
-//                     backgroundColor: card.badgeColor,
-//                     color: card.textColor,
-//                   }}
-//                 >
-//                   {card.count}
-//                 </span>
-//               </div>
-//             </button>
-//           );
-//         })}
-//       </div>
-
-//       {/* Error */}
-
-//       <Collapse in={Boolean(error)}>
-//         {error && (
-//           <Alert
-//             severity="error"
-//             onClose={() => setError(null)}
-//             sx={{
-//               borderRadius: 2,
-//             }}
-//           >
-//             {error}
-//           </Alert>
-//         )}
-//       </Collapse>
-
-//       {/* Selected card table */}
-
-//       {/* {selectedCard && !error && (
-//         <Box
-//           sx={{
-//             mt: 4,
-//             overflow: "hidden",
-//             border: "1px solid #E2E8F0",
-//             borderRadius: 3,
-//             backgroundColor: "#FFFFFF",
-//           }}
-//         >
-//           <Box
-//             sx={{
-//               px: 3,
-//               py: 2.5,
-//               borderBottom: "1px solid #E2E8F0",
-//             }}
-//           >
-//             <Typography
-//               component="h2"
-//               variant="h6"
-//               fontWeight={700}
-//               color="#0F172A"
-//             >
-//               {selectedCardTitle}
-//             </Typography>
-
-//             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-//               Records loaded from the selected report service
-//             </Typography>
-//           </Box>
-
-//           <DataTable
-//             rows={rows}
-//             columns={columns}
-//             loading={loading}
-//             emptyMessage={`No ${selectedCardTitle.toLowerCase()} found.`}
-//           />
-//         </Box>
-//       )} */}
-//       {selectedCard && !error && (
-//         <Box
-//           sx={{
-//             mt: 4,
-//             overflow: "hidden",
-//             border: "1px solid #E2E8F0",
-//             borderRadius: 3,
-//             backgroundColor: "#FFFFFF",
-//           }}
-//         >
-//           <Box
-//             sx={{
-//               display: "flex",
-//               flexDirection: {
-//                 xs: "column",
-//                 md: "row",
-//               },
-//               alignItems: {
-//                 xs: "stretch",
-//                 md: "center",
-//               },
-//               justifyContent: "space-between",
-//               gap: 2,
-//               px: 3,
-//               py: 2.5,
-//               borderBottom: "1px solid #E2E8F0",
-//             }}
-//           >
-//             <Box>
-//               <Typography
-//                 component="h2"
-//                 variant="h6"
-//                 fontWeight={700}
-//                 color="#0F172A"
-//               >
-//                 {selectedCardTitle}
-//               </Typography>
-
-//               <Typography
-//                 variant="body2"
-//                 color="text.secondary"
-//                 sx={{ mt: 0.5 }}
-//               >
-//                 Users loaded from the selected service
-//               </Typography>
-//             </Box>
-
-//             <TextField
-//               value={searchText}
-//               onChange={(event) => setSearchText(event.target.value)}
-//               placeholder="Search by name or email"
-//               size="small"
-//               disabled={loading}
-//               slotProps={{
-//                 input: {
-//                   startAdornment: (
-//                     <InputAdornment position="start">
-//                       <SearchRoundedIcon
-//                         sx={{
-//                           color: "#64748B",
-//                         }}
-//                       />
-//                     </InputAdornment>
-//                   ),
-//                 },
-//               }}
-//               sx={{
-//                 width: {
-//                   xs: "100%",
-//                   md: 320,
-//                 },
-
-//                 "& .MuiOutlinedInput-root": {
-//                   borderRadius: 2,
-
-//                   "&.Mui-focused fieldset": {
-//                     borderColor: "#0D9488",
-//                   },
-//                 },
-//               }}
-//             />
-//           </Box>
-
-//           <DataTable
-//             rows={filteredRows}
-//             columns={columns}
-//             loading={loading}
-//             emptyMessage={
-//               searchText.trim()
-//                 ? `No user found matching "${searchText.trim()}".`
-//                 : `No users found for ${selectedCardTitle}.`
-//             }
-//           />
-//         </Box>
-//       )}
-//     </div>
-//   );
-// }
-
-import { useMemo, useState, useEffect } from "react";
-import type { ReactNode } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import axios from "axios";
-
+import dayjs, { type Dayjs } from "dayjs";
 import {
   Alert,
   Box,
+  ButtonBase,
   Collapse,
+  IconButton,
   InputAdornment,
+  Popover,
   TextField,
+  Tooltip,
   Typography,
   Button,
   Stack,
 } from "@mui/material";
-
 import type { GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import AccountTreeIcon from "@mui/icons-material/AccountTree";
-import FolderIcon from "@mui/icons-material/Folder";
-import SettingsIcon from "@mui/icons-material/Settings";
+import CalendarMonthOutlinedIcon from "@mui/icons-material/CalendarMonthOutlined";
+import FilterListRoundedIcon from "@mui/icons-material/FilterListRounded";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import BarChartRoundedIcon from "@mui/icons-material/BarChartRounded";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import KeyboardArrowRightRoundedIcon from "@mui/icons-material/KeyboardArrowRightRounded";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateCalendar } from "@mui/x-date-pickers/DateCalendar";
 import DataTable from "../../components/common/DataTable";
-
 type CardId = "breas" | "arcs" | "processed";
 type CardCounts = Record<CardId, number>;
 type CardCountLoading = Record<CardId, boolean>;
-
 interface ReportCard {
   id: CardId;
   title: string;
@@ -575,14 +41,12 @@ interface ReportCard {
   backgroundColor: string;
   borderColor: string;
   iconBackgroundColor: string;
-  iconBorderColor: string;
   blobColor: string;
   badgeColor: string;
   badgeTextColor: string;
   textColor: string;
   apiUrl: string;
 }
-
 interface ApiUserRecord {
   id: string;
   name: string;
@@ -590,81 +54,56 @@ interface ApiUserRecord {
   password?: string;
   role: string;
 }
-
 const cards: ReportCard[] = [
   {
     id: "breas",
-    title: "Breas Files",
-    description: "View and manage your Breas files",
+    title: "Breas files",
+    description: "View and manage your breas files",
     count: 0,
-    icon: (
-      <FolderIcon
-        sx={{
-          fontSize: 30,
-        }}
-      />
-    ),
-    backgroundColor: "rgb(240, 253, 250)",
-    borderColor: "rgba(110, 231, 183, 0.55)",
-    iconBackgroundColor: "#059B7F",
-    iconBorderColor: "#059B7F",
-    blobColor: "rgba(5, 155, 127, 0.08)",
-    badgeColor: "#D1FAE5",
-    badgeTextColor: "#059B7F",
-    textColor: "#059B7F",
+    icon: <DescriptionOutlinedIcon sx={{ fontSize: 29 }} />,
+    backgroundColor: "#F0FCFB",
+    borderColor: "#8EE3DE",
+    iconBackgroundColor: "#00A58C",
+    blobColor: "rgba(0, 165, 140, 0.075)",
+    badgeColor: "#CCF4E9",
+    badgeTextColor: "#008C77",
+    textColor: "#009C85",
     apiUrl:
       "https://6aa26491ccb3db9689a66ef8.mockapi.io/api/response/bot/users",
   },
-
   {
     id: "arcs",
-    title: "ARCS Files",
+    title: "ARCS files",
     description: "Access ARCS related files",
     count: 0,
-    icon: (
-      <AccountTreeIcon
-        sx={{
-          fontSize: 30,
-        }}
-      />
-    ),
-    backgroundColor: "rgb(242, 249, 255)",
-    borderColor: "rgba(125, 211, 252, 0.55)",
-    iconBackgroundColor: "#4FA4FB",
-    iconBorderColor: "#4FA4FB",
-    blobColor: "rgba(79, 164, 251, 0.08)",
-    badgeColor: "#DBF1FF",
-    badgeTextColor: "#4FA4FB",
-    textColor: "#4FA4FB",
+    icon: <BarChartRoundedIcon sx={{ fontSize: 30 }} />,
+    backgroundColor: "#F1F8FF",
+    borderColor: "#B8DCF8",
+    iconBackgroundColor: "#4A9EF4",
+    blobColor: "rgba(74, 158, 244, 0.075)",
+    badgeColor: "#DDEEFF",
+    badgeTextColor: "#4396ED",
+    textColor: "#489CF3",
     apiUrl:
       "https://6aa26491ccb3db9689a66ef8.mockapi.io/api/response/bot/users",
   },
-
   {
     id: "processed",
-    title: "Processed Files",
-    description: "Track and manage processed files",
+    title: "Processed files",
+    description: "Track and manage process",
     count: 0,
-    icon: (
-      <SettingsIcon
-        sx={{
-          fontSize: 30,
-        }}
-      />
-    ),
-    backgroundColor: "rgb(246, 245, 252)",
-    borderColor: "rgba(196, 181, 253, 0.55)",
-    iconBackgroundColor: "#9761ED",
-    iconBorderColor: "#9761ED",
-    blobColor: "rgba(151, 97, 237, 0.08)",
-    badgeColor: "#EDE9FF",
-    badgeTextColor: "#9761ED",
-    textColor: "#9761ED",
+    icon: <SettingsOutlinedIcon sx={{ fontSize: 29 }} />,
+    backgroundColor: "#F8F5FF",
+    borderColor: "#DFC1FA",
+    iconBackgroundColor: "#9455EA",
+    blobColor: "rgba(148, 85, 234, 0.075)",
+    badgeColor: "#EEE3FF",
+    badgeTextColor: "#9253E8",
+    textColor: "#9253E8",
     apiUrl:
       "https://6aa26491ccb3db9689a66ef8.mockapi.io/api/response/bot/users",
   },
 ];
-
 const columns: GridColDef<ApiUserRecord>[] = [
   {
     field: "id",
@@ -736,47 +175,51 @@ const columns: GridColDef<ApiUserRecord>[] = [
     ),
   },
 ];
-
 export default function ReportsPage() {
   const [selectedCard, setSelectedCard] = useState<CardId | null>(null);
-
   const [selectedCardTitle, setSelectedCardTitle] = useState("");
-
   const [rows, setRows] = useState<GridRowsProp<ApiUserRecord>>([]);
-
   const [loading, setLoading] = useState(false);
-
   const [error, setError] = useState<string | null>(null);
-
   const [searchText, setSearchText] = useState("");
-
+  const [startDate, setStartDate] = useState<Dayjs | null>(
+    dayjs("2021-07-02"),
+  );
+  const [endDate, setEndDate] = useState<Dayjs | null>(
+    dayjs("2021-07-25"),
+  );
+  const [dateAnchorEl, setDateAnchorEl] =
+    useState<HTMLElement | null>(null);
+  const [filterEnabled, setFilterEnabled] = useState(false);
   const [cardCounts, setCardCounts] = useState<CardCounts>({
     breas: 0,
     arcs: 0,
     processed: 0,
   });
-
-  const [cardCountLoading, setCardCountLoading] = useState<CardCountLoading>({
-    breas: true,
-    arcs: true,
-    processed: true,
-  });
-
+  const [cardCountLoading, setCardCountLoading] =
+    useState<CardCountLoading>({
+      breas: true,
+      arcs: true,
+      processed: true,
+    });
+  const dateCalendarOpen = Boolean(dateAnchorEl);
   useEffect(() => {
     const controller = new AbortController();
-
     const loadCardCounts = async () => {
       const countResults = await Promise.allSettled(
         cards.map(async (card) => {
           try {
-            const response = await axios.get<ApiUserRecord[]>(card.apiUrl, {
-              signal: controller.signal,
-            });
-
+            const response = await axios.get<ApiUserRecord[]>(
+              card.apiUrl,
+              {
+                signal: controller.signal,
+              },
+            );
             if (!Array.isArray(response.data)) {
-              throw new Error(`${card.title} did not return a valid list.`);
+              throw new Error(
+                `${card.title} did not return a valid list.`,
+              );
             }
-
             return {
               id: card.id,
               count: response.data.length,
@@ -789,11 +232,9 @@ export default function ReportsPage() {
           }
         }),
       );
-
       if (controller.signal.aborted) {
         return;
       }
-
       countResults.forEach((result) => {
         if (result.status === "fulfilled") {
           setCardCounts((previous) => ({
@@ -803,14 +244,72 @@ export default function ReportsPage() {
         }
       });
     };
-
     loadCardCounts();
-
     return () => {
       controller.abort();
     };
   }, []);
-
+  const handleOpenDateCalendar = (
+    event: MouseEvent<HTMLElement>,
+  ) => {
+    setDateAnchorEl(event.currentTarget);
+  };
+  const handleCloseDateCalendar = () => {
+    setDateAnchorEl(null);
+  };
+  const handleStartDateChange = (newDate: Dayjs | null) => {
+    setStartDate(newDate);
+    if (
+      newDate &&
+      endDate &&
+      newDate.startOf("day").isAfter(endDate.startOf("day"))
+    ) {
+      setEndDate(newDate);
+    }
+  };
+  const handleEndDateChange = (newDate: Dayjs | null) => {
+    if (
+      newDate &&
+      startDate &&
+      newDate.startOf("day").isBefore(startDate.startOf("day"))
+    ) {
+      setStartDate(newDate);
+    }
+    setEndDate(newDate);
+  };
+  const handleFilterClick = () => {
+    setFilterEnabled((previous) => !previous);
+  };
+  const handleDownloadClick = () => {
+    if (filteredRows.length === 0) {
+      setError("There are no records available to download.");
+      return;
+    }
+    const csvHeader = ["ID", "Name", "Email Address", "Role"];
+    const csvRows = filteredRows.map((row) => [
+      row.id,
+      row.name,
+      row.email,
+      row.role,
+    ]);
+    const escapeCsvValue = (value: unknown) =>
+      `"${String(value ?? "").replace(/"/g, '""')}"`;
+    const csvContent = [csvHeader, ...csvRows]
+      .map((row) => row.map(escapeCsvValue).join(","))
+      .join("\n");
+    const csvBlob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+    const csvUrl = URL.createObjectURL(csvBlob);
+    const downloadLink = document.createElement("a");
+    downloadLink.href = csvUrl;
+    downloadLink.download = `${selectedCardTitle || "reports"
+      }-${dayjs().format("YYYY-MM-DD")}.csv`;
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(csvUrl);
+  };
   const handleCardClick = async (card: ReportCard) => {
     try {
       setSelectedCard(card.id);
@@ -819,47 +318,44 @@ export default function ReportsPage() {
       setRows([]);
       setError(null);
       setLoading(true);
-
-      const response = await axios.get<ApiUserRecord[]>(card.apiUrl);
-
+      const response = await axios.get<ApiUserRecord[]>(
+        card.apiUrl,
+      );
       if (!Array.isArray(response.data)) {
-        throw new Error("The API response is not a valid user list.");
+        throw new Error(
+          "The API response is not a valid user list.",
+        );
       }
-
       const formattedRows: ApiUserRecord[] = response.data.map(
         (user, index) => ({
           id: user.id ?? String(index + 1),
           name: user.name?.trim() || "Unknown User",
           email: user.email?.trim() || "-",
           role: user.role?.trim() || "CUSTOMER",
-
-          // Password is retained because the API returns it,
-          // but it is intentionally not displayed.
           password: user.password,
         }),
       );
-
       setRows(formattedRows);
-    } catch (error: unknown) {
+    } catch (caughtError: unknown) {
       setRows([]);
-
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 404) {
+      if (axios.isAxiosError(caughtError)) {
+        if (caughtError.response?.status === 404) {
           setError(`${card.title} API endpoint was not found.`);
-        } else if (!error.response) {
+        } else if (!caughtError.response) {
           setError("Unable to connect to the report service.");
         } else {
           const apiMessage =
-            typeof error.response.data === "object" &&
-            error.response.data !== null &&
-            "message" in error.response.data
-              ? String(error.response.data.message)
+            typeof caughtError.response.data === "object" &&
+              caughtError.response.data !== null &&
+              "message" in caughtError.response.data
+              ? String(caughtError.response.data.message)
               : null;
-
-          setError(apiMessage || "Unable to load report records.");
+          setError(
+            apiMessage || "Unable to load report records.",
+          );
         }
-      } else if (error instanceof Error) {
-        setError(error.message);
+      } else if (caughtError instanceof Error) {
+        setError(caughtError.message);
       } else {
         setError("An unexpected error occurred.");
       }
@@ -867,436 +363,605 @@ export default function ReportsPage() {
       setLoading(false);
     }
   };
-
   const filteredRows = useMemo(() => {
     const normalizedSearch = searchText.trim().toLowerCase();
-
     if (!normalizedSearch) {
       return rows;
     }
-
     return rows.filter((user) => {
-      const normalizedName = String(user.name ?? "").toLowerCase();
-
-      const normalizedEmail = String(user.email ?? "").toLowerCase();
-
+      const normalizedName = String(
+        user.name ?? "",
+      ).toLowerCase();
+      const normalizedEmail = String(
+        user.email ?? "",
+      ).toLowerCase();
       return (
         normalizedName.includes(normalizedSearch) ||
         normalizedEmail.includes(normalizedSearch)
       );
     });
   }, [rows, searchText]);
-
   return (
-    <Box>
-      {/* Page heading */}
-
-      <Box sx={{ mb: 3 }}>
-        <Typography
-          component="h1"
-          variant="h4"
-          sx={{
-            color: "#0F172A",
-            fontWeight: 700,
-          }}
-        >
-          Reports
-        </Typography>
-
-        {/* <Typography variant="body2" color="text.secondary" sx={{ mt: 0.75 }}>
-          Select a card to view the corresponding records.
-        </Typography> */}
-      </Box>
-
-      {/* Cards */}
-
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box
         sx={{
-          display: "grid",
-
-          gridTemplateColumns: {
-            xs: "1fr",
-            md: "repeat(3, minmax(0, 1fr))",
-          },
-
-          gap: 3,
+          width: "100%",
+          color: "#081A3A",
         }}
       >
-        {cards.map((card) => {
-          const isSelected = selectedCard === card.id;
-
-          return (
-            <Box
-              key={card.id}
-              component="button"
-              type="button"
-              onClick={() => handleCardClick(card)}
-              aria-pressed={isSelected}
-              sx={{
-                position: "relative",
-                minHeight: 205,
-                overflow: "hidden",
-
-                padding: 2.5,
-                borderRadius: 4,
-
-                border: isSelected
-                  ? `2px solid ${card.textColor}`
-                  : `1px solid ${card.borderColor}`,
-
-                backgroundColor: card.backgroundColor,
-
-                boxShadow: isSelected
-                  ? `0 12px 28px ${card.textColor}25`
-                  : "0 2px 4px rgba(15, 23, 42, 0.05)",
-
-                cursor: "pointer",
-                textAlign: "left",
-
-                transition:
-                  "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
-
-                "&:hover": {
-                  transform: "translateY(-6px)",
-
-                  boxShadow: `0 16px 35px ${card.textColor}25`,
-                },
-
-                "&:focus-visible": {
-                  outline: `3px solid ${card.textColor}35`,
-                  outlineOffset: "3px",
-                },
-              }}
-            >
-              {/* Decorative background shape */}
-
-              <Box
-                component="svg"
-                viewBox="0 0 200 120"
-                preserveAspectRatio="none"
-                aria-hidden="true"
-                sx={{
-                  position: "absolute",
-                  bottom: "-25px",
-                  left: "-25px",
-                  width: "180px",
-                  height: "125px",
-                  transform: "rotate(-3deg)",
-                  transformOrigin: "bottom left",
-                  pointerEvents: "none",
-                }}
-              >
-                <path
-                  d="
-                    M0,0
-                    C5,0 12,20 25,28
-                    C40,38 55,50 70,58
-                    C90,70 110,80 130,88
-                    C150,96 170,102 185,104
-                    C192,105 197,105 200,105
-                    L200,120
-                    L12,120
-                    Q0,120 0,108
-                    Z
-                  "
-                  fill={card.blobColor}
-                />
-              </Box>
-
-              <Box
-                sx={{
-                  position: "relative",
-                  zIndex: 1,
-                }}
-              >
-                {/* Icon */}
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-
-                    width: 50,
-                    height: 50,
-
-                    mb: 2,
-                    borderRadius: "50%",
-
-                    color: "#FFFFFF",
-
-                    backgroundColor: card.iconBackgroundColor,
-
-                    border: `2px solid ${card.iconBorderColor}`,
-                  }}
-                >
-                  {card.icon}
-                </Box>
-
-                {/* Title and arrow */}
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1,
-                  }}
-                >
-                  <Typography
-                    component="h2"
-                    sx={{
-                      color: "#1E293B",
-                      fontSize: "1.25rem",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {card.title}
-                  </Typography>
-
-                  <Box
-                    component="svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                    sx={{
-                      ml: "auto",
-                      color: "#334155",
-                    }}
-                  >
-                    <path d="M7 7l6 6-6 6" />
-                  </Box>
-                </Box>
-
-                {/* Description */}
-
-                <Typography
-                  variant="body2"
-                  sx={{
-                    mt: 1,
-                    color: "#64748B",
-                  }}
-                >
-                  {card.description}
-                </Typography>
-
-                {/* Action and count */}
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    mt: 2.5,
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      color: card.textColor,
-                      fontSize: "0.95rem",
-                      fontWeight: 600,
-                    }}
-                  >
-                    View records
-                  </Typography>
-
-                  <Box
-                    component="span"
-                    sx={{
-                      minWidth: 42,
-                      px: 1.5,
-                      py: 0.5,
-
-                      borderRadius: 10,
-
-                      color: card.badgeTextColor,
-
-                      backgroundColor: card.badgeColor,
-
-                      fontSize: "0.85rem",
-                      fontWeight: 700,
-                      textAlign: "center",
-                    }}
-                  >
-                    {cardCountLoading[card.id] ? "..." : cardCounts[card.id]}
-                  </Box>
-                </Box>
-
-                {/* Decorative vertical arrow */}
-
-                <Box
-                  component="svg"
-                  viewBox="0 0 40 200"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                  sx={{
-                    position: "absolute",
-                    left: "50%",
-                    top: "calc(100% - 160px)",
-
-                    width: "2px",
-                    height: "160px",
-
-                    transform: "translateX(-50%)",
-
-                    opacity: 0.08,
-                    pointerEvents: "none",
-                  }}
-                >
-                  <line
-                    x1="20"
-                    y1="0"
-                    x2="20"
-                    y2="185"
-                    stroke={card.textColor}
-                    strokeWidth="1.5"
-                  />
-
-                  <polygon
-                    points="20,198 15,188 25,188"
-                    fill={card.textColor}
-                  />
-                </Box>
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
-
-      {/* API error */}
-
-      <Collapse in={Boolean(error)}>
-        {error && (
-          <Alert
-            severity="error"
-            onClose={() => setError(null)}
-            sx={{
-              mt: 3,
-              borderRadius: 2,
-            }}
-          >
-            {error}
-          </Alert>
-        )}
-      </Collapse>
-
-      {/* Table section */}
-
-      {selectedCard && !error && (
+        {/* Header */}
         <Box
           sx={{
-            mt: 4,
-            overflow: "hidden",
-
-            border: "1px solid #E2E8F0",
-
-            borderRadius: 3,
-
-            backgroundColor: "#FFFFFF",
+            mb: 4,
+            display: "flex",
+            alignItems: {
+              xs: "stretch",
+              md: "center",
+            },
+            justifyContent: "space-between",
+            flexDirection: {
+              xs: "column",
+              md: "row",
+            },
+            gap: 2,
           }}
         >
-          {/* Table heading and search */}
-
+          <Typography
+            component="h1"
+            sx={{
+              color: "#081A3A",
+              fontSize: {
+                xs: "2rem",
+                md: "2.75rem",
+              },
+              lineHeight: 1.15,
+              fontWeight: 700,
+              letterSpacing: "-0.6px",
+            }}
+          >
+            Reports
+          </Typography>
           <Box
             sx={{
               display: "flex",
-
+              alignItems: "center",
+              justifyContent: {
+                xs: "flex-start",
+                md: "flex-end",
+              },
+              flexWrap: "wrap",
+              gap: 1.75,
+            }}
+          >
+            {/* Clickable date range */}
+            <ButtonBase
+              onClick={handleOpenDateCalendar}
+              aria-label="Select report date range"
+              aria-haspopup="dialog"
+              aria-expanded={dateCalendarOpen}
+              sx={{
+                minHeight: 58,
+                minWidth: {
+                  xs: "100%",
+                  sm: 390,
+                },
+                px: {
+                  xs: 2,
+                  sm: 2.5,
+                },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 1.5,
+                color: "#334A6B",
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #DCE3EC",
+                borderRadius: "18px",
+                boxShadow: "0 2px 6px rgba(15, 23, 42, 0.08)",
+                transition:
+                  "border-color 0.2s ease, box-shadow 0.2s ease",
+                "&:hover": {
+                  borderColor: "#9FCFD0",
+                  boxShadow:
+                    "0 4px 12px rgba(15, 23, 42, 0.1)",
+                },
+                "&:focus-visible": {
+                  outline: "3px solid rgba(0, 137, 123, 0.2)",
+                  outlineOffset: "2px",
+                },
+              }}
+            >
+              <CalendarMonthOutlinedIcon
+                sx={{
+                  color: "#61738D",
+                  fontSize: 26,
+                  flexShrink: 0,
+                }}
+              />
+              <Typography
+                component="span"
+                sx={{
+                  color: "#334A6B",
+                  fontSize: {
+                    xs: "0.9rem",
+                    sm: "1.05rem",
+                  },
+                  fontWeight: 500,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {startDate
+                  ? startDate.format("DD MMM YYYY")
+                  : "Start date"}
+              </Typography>
+              <Typography
+                component="span"
+                sx={{
+                  color: "#8090A6",
+                  fontSize: "1.05rem",
+                  fontWeight: 600,
+                }}
+              >
+                -
+              </Typography>
+              <Typography
+                component="span"
+                sx={{
+                  color: "#334A6B",
+                  fontSize: {
+                    xs: "0.9rem",
+                    sm: "1.05rem",
+                  },
+                  fontWeight: 500,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {endDate
+                  ? endDate.format("DD MMM YYYY")
+                  : "End date"}
+              </Typography>
+              <CalendarMonthOutlinedIcon
+                sx={{
+                  color: "#61738D",
+                  fontSize: 26,
+                  flexShrink: 0,
+                }}
+              />
+            </ButtonBase>
+            {/* Filter button */}
+            <Tooltip title="Filter records">
+              <IconButton
+                onClick={handleFilterClick}
+                aria-label="Filter records"
+                aria-pressed={filterEnabled}
+                sx={{
+                  width: 50,
+                  height: 50,
+                  color: "#007F7C",
+                  backgroundColor: filterEnabled
+                    ? "#E6F7F5"
+                    : "#FFFFFF",
+                  border: "1px solid #9DD4D3",
+                  borderRadius: "10px",
+                  "&:hover": {
+                    backgroundColor: "#E6F7F5",
+                  },
+                }}
+              >
+                <FilterListRoundedIcon sx={{ fontSize: 25 }} />
+              </IconButton>
+            </Tooltip>
+            {/* Download button */}
+            <Tooltip title="Download records">
+              <span>
+                <IconButton
+                  onClick={handleDownloadClick}
+                  aria-label="Download records"
+                  disabled={!selectedCard || loading}
+                  sx={{
+                    width: 50,
+                    height: 50,
+                    color: "#007F7C",
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #9DD4D3",
+                    borderRadius: "10px",
+                    "&:hover": {
+                      backgroundColor: "#E6F7F5",
+                    },
+                    "&.Mui-disabled": {
+                      color: "#A8B7C7",
+                      borderColor: "#D8E1EA",
+                      backgroundColor: "#F8FAFC",
+                    },
+                  }}
+                >
+                  <FileDownloadOutlinedIcon
+                    sx={{ fontSize: 25 }}
+                  />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </Box>
+        </Box>
+        {/* Calendar popup */}
+        <Popover
+          open={dateCalendarOpen}
+          anchorEl={dateAnchorEl}
+          onClose={handleCloseDateCalendar}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+          slotProps={{
+            paper: {
+              sx: {
+                mt: 1,
+                p: 1.5,
+                maxWidth: "calc(100vw - 24px)",
+                borderRadius: "16px",
+                border: "1px solid #E2E8F0",
+                boxShadow:
+                  "0 14px 35px rgba(15, 23, 42, 0.16)",
+              },
+            },
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
               flexDirection: {
                 xs: "column",
-                md: "row",
+                lg: "row",
               },
-
-              alignItems: {
-                xs: "stretch",
-                md: "center",
-              },
-
-              justifyContent: "space-between",
-
-              gap: 2,
-
-              px: 3,
-              py: 2.5,
-
-              borderBottom: "1px solid #E2E8F0",
+              gap: 1,
             }}
           >
             <Box>
               <Typography
-                component="h2"
-                variant="h6"
                 sx={{
-                  color: "#0F172A",
+                  px: 2,
+                  pt: 1,
+                  color: "#081A3A",
+                  fontSize: "0.9rem",
                   fontWeight: 700,
                 }}
               >
-                {selectedCardTitle}
+                Start date
               </Typography>
-
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Records loaded from the selected report service
-              </Typography>
+              <DateCalendar
+                value={startDate}
+                onChange={handleStartDateChange}
+              />
             </Box>
-
-            <TextField
-              value={searchText}
-              onChange={(event) => setSearchText(event.target.value)}
-              placeholder="Search by name or email"
-              size="small"
-              disabled={loading}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchRoundedIcon
-                        sx={{
-                          color: "#64748B",
-                        }}
-                      />
-                    </InputAdornment>
-                  ),
-                },
-              }}
+            <Box
               sx={{
-                width: {
-                  xs: "100%",
-                  md: 320,
+                borderLeft: {
+                  xs: "none",
+                  lg: "1px solid #E2E8F0",
                 },
-
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
-
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#0D9488",
-                  },
+                borderTop: {
+                  xs: "1px solid #E2E8F0",
+                  lg: "none",
                 },
               }}
+            >
+              <Typography
+                sx={{
+                  px: 2,
+                  pt: 1,
+                  color: "#081A3A",
+                  fontSize: "0.9rem",
+                  fontWeight: 700,
+                }}
+              >
+                End date
+              </Typography>
+              <DateCalendar
+                value={endDate}
+                onChange={handleEndDateChange}
+                minDate={startDate ?? undefined}
+              />
+            </Box>
+          </Box>
+        </Popover>
+        {/* Cards */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              md: "repeat(3, minmax(0, 1fr))",
+            },
+            gap: 3,
+          }}
+        >
+          {cards.map((card) => {
+            const isSelected = selectedCard === card.id;
+            return (
+              <Box
+                key={card.id}
+                component="button"
+                type="button"
+                onClick={() => handleCardClick(card)}
+                aria-pressed={isSelected}
+                sx={{
+                  position: "relative",
+                  minHeight: 232,
+                  overflow: "hidden",
+                  p: 3.5,
+                  borderRadius: "20px",
+                  border: isSelected
+                    ? `2px solid ${card.textColor}`
+                    : `1px solid ${card.borderColor}`,
+                  backgroundColor: card.backgroundColor,
+                  boxShadow: isSelected
+                    ? `0 12px 30px ${card.textColor}20`
+                    : "0 2px 5px rgba(15, 23, 42, 0.04)",
+                  cursor: "pointer",
+                  fontFamily: "inherit",
+                  textAlign: "left",
+                  transition:
+                    "transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease",
+                  "&:hover": {
+                    transform: "translateY(-4px)",
+                    boxShadow: `0 14px 30px ${card.textColor}20`,
+                  },
+                  "&:focus-visible": {
+                    outline: `3px solid ${card.textColor}30`,
+                    outlineOffset: "3px",
+                  },
+                }}
+              >
+                {/* Decorative bottom curve */}
+                <Box
+                  component="svg"
+                  viewBox="0 0 500 130"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                  sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "95px",
+                    pointerEvents: "none",
+                  }}
+                >
+                  <path
+                    d="
+                      M0,0
+                      C70,58 140,84 230,100
+                      C320,118 405,128 500,130
+                      L500,130
+                      L0,130
+                      Z
+                    "
+                    fill={card.blobColor}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    position: "relative",
+                    zIndex: 1,
+                    height: "100%",
+                  }}
+                >
+                  {/* Card icon */}
+                  <Box
+                    sx={{
+                      width: 61,
+                      height: 61,
+                      mb: 2.5,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#FFFFFF",
+                      backgroundColor: card.iconBackgroundColor,
+                      borderRadius: "50%",
+                    }}
+                  >
+                    {card.icon}
+                  </Box>
+                  {/* Card title and arrow */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <Typography
+                      component="h2"
+                      sx={{
+                        color: "#0B1833",
+                        fontSize: {
+                          xs: "1.2rem",
+                          lg: "1.3rem",
+                        },
+                        lineHeight: 1.25,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {card.title}
+                    </Typography>
+                    <KeyboardArrowRightRoundedIcon
+                      sx={{
+                        ml: "auto",
+                        color: "#26374F",
+                        fontSize: 25,
+                      }}
+                    />
+                  </Box>
+                  {/* Description */}
+                  <Typography
+                    sx={{
+                      mt: 0.75,
+                      color: "#5D6878",
+                      fontSize: "0.92rem",
+                      lineHeight: 1.45,
+                      fontWeight: 400,
+                    }}
+                  >
+                    {card.description}
+                  </Typography>
+                  {/* Download and count */}
+                  <Box
+                    sx={{
+                      mt: 2.25,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        color: card.textColor,
+                        fontSize: "0.98rem",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Download
+                    </Typography>
+                    <Box
+                      component="span"
+                      sx={{
+                        minWidth: 42,
+                        px: 1.6,
+                        py: 0.45,
+                        color: card.badgeTextColor,
+                        backgroundColor: card.badgeColor,
+                        borderRadius: "999px",
+                        fontSize: "0.85rem",
+                        lineHeight: 1.5,
+                        fontWeight: 600,
+                        textAlign: "center",
+                      }}
+                    >
+                      {cardCountLoading[card.id]
+                        ? "..."
+                        : cardCounts[card.id]}
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+            );
+          })}
+        </Box>
+        {/* Error message */}
+        <Collapse in={Boolean(error)}>
+          {error && (
+            <Alert
+              severity="error"
+              onClose={() => setError(null)}
+              sx={{
+                mt: 3,
+                borderRadius: 2,
+              }}
+            >
+              {error}
+            </Alert>
+          )}
+        </Collapse>
+        {/* Table section */}
+        {selectedCard && !error && (
+          <Box
+            sx={{
+              mt: 4,
+              overflow: "hidden",
+              backgroundColor: "#FFFFFF",
+              border: "1px solid #E2E8F0",
+              borderRadius: 3,
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: {
+                  xs: "column",
+                  md: "row",
+                },
+                alignItems: {
+                  xs: "stretch",
+                  md: "center",
+                },
+                justifyContent: "space-between",
+                gap: 2,
+                px: 3,
+                py: 2.5,
+                borderBottom: "1px solid #E2E8F0",
+              }}
+            >
+              <Box>
+                <Typography
+                  component="h2"
+                  sx={{
+                    color: "#081A3A",
+                    fontSize: "1.25rem",
+                    fontWeight: 700,
+                  }}
+                >
+                  {selectedCardTitle}
+                </Typography>
+                <Typography
+                  sx={{
+                    mt: 0.5,
+                    color: "#64748B",
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  Records loaded from the selected report service
+                </Typography>
+              </Box>
+              <TextField
+                value={searchText}
+                onChange={(event) =>
+                  setSearchText(event.target.value)
+                }
+                placeholder="Search by name or email"
+                size="small"
+                disabled={loading}
+                slotProps={{
+                  input: {
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SearchRoundedIcon
+                          sx={{ color: "#64748B" }}
+                        />
+                      </InputAdornment>
+                    ),
+                  },
+                }}
+                sx={{
+                  width: {
+                    xs: "100%",
+                    md: 320,
+                  },
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: 2,
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#0D9488",
+                    },
+                  },
+                }}
+              />
+            </Box>
+            <DataTable
+              rows={filteredRows}
+              columns={columns}
+              loading={loading}
+              emptyMessage={
+                searchText.trim()
+                  ? `No user found matching "${searchText.trim()}".`
+                  : `No records found for ${selectedCardTitle}.`
+              }
             />
           </Box>
-
-          {/* Reusable DataGrid */}
-
-          <DataTable
-            rows={filteredRows}
-            columns={columns}
-            loading={loading}
-            emptyMessage={
-              searchText.trim()
-                ? `No user found matching "${searchText.trim()}".`
-                : `No records found for ${selectedCardTitle}.`
-            }
-          />
-        </Box>
-      )}
-    </Box>
+        )}
+      </Box>
+    </LocalizationProvider>
   );
 }
