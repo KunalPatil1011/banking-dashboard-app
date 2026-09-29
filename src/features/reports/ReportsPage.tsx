@@ -551,6 +551,8 @@ import {
   InputAdornment,
   TextField,
   Typography,
+  Button,
+  Stack,
 } from "@mui/material";
 
 import type { GridColDef, GridRowsProp } from "@mui/x-data-grid";
@@ -686,6 +688,52 @@ const columns: GridColDef<ApiUserRecord>[] = [
     headerName: "Role",
     minWidth: 150,
     flex: 0.5,
+  },
+  {
+    field: "actions",
+    headerName: "Actions",
+    minWidth: 220,
+    sortable: false,
+    filterable: false,
+
+    renderCell: () => (
+      <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
+        {/* <Button
+          variant="contained"
+          size="small"
+          sx={{
+            bgcolor: "#10B981",
+
+            "&:hover": {
+              bgcolor: "#059669",
+            },
+          }}
+        >
+          Approve
+        </Button>
+
+        <Button
+          variant="contained"
+          size="small"
+          sx={{
+            bgcolor: "#EF4444",
+
+            "&:hover": {
+              bgcolor: "#DC2626",
+            },
+          }}
+        >
+          Reject
+        </Button> */}
+        <Button variant="outlined" color="success" size="small">
+          Approve
+        </Button>
+
+        <Button variant="outlined" color="error" size="small">
+          Reject
+        </Button>
+      </Stack>
+    ),
   },
 ];
 
