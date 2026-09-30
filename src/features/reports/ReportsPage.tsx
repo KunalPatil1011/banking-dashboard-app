@@ -53,6 +53,7 @@ interface ApiUserRecord {
   email: string;
   password?: string;
   role: string;
+  createdAt: string;
 }
 const cards: ReportCard[] = [
   {
@@ -182,43 +183,37 @@ export default function ReportsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchText, setSearchText] = useState("");
-  const [startDate, setStartDate] = useState<Dayjs | null>(
-    dayjs("2021-07-02"),
-  );
-  const [endDate, setEndDate] = useState<Dayjs | null>(
-    dayjs("2021-07-25"),
-  );
-  const [dateAnchorEl, setDateAnchorEl] =
-    useState<HTMLElement | null>(null);
+  // const [startDate, setStartDate] = useState<Dayjs | null>(dayjs("2021-07-02"));
+  // const [endDate, setEndDate] = useState<Dayjs | null>(dayjs("2021-07-25"));
+  const [dateAnchorEl, setDateAnchorEl] = useState<HTMLElement | null>(null);
   const [filterEnabled, setFilterEnabled] = useState(false);
   const [cardCounts, setCardCounts] = useState<CardCounts>({
     breas: 0,
     arcs: 0,
     processed: 0,
   });
-  const [cardCountLoading, setCardCountLoading] =
-    useState<CardCountLoading>({
-      breas: true,
-      arcs: true,
-      processed: true,
-    });
+  const [cardCountLoading, setCardCountLoading] = useState<CardCountLoading>({
+    breas: true,
+    arcs: true,
+    processed: true,
+  });
   const dateCalendarOpen = Boolean(dateAnchorEl);
+  // const [rows, setRows] = useState([]);
+  // const [searchText, setSearchText] = useState("");
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
+
   useEffect(() => {
     const controller = new AbortController();
     const loadCardCounts = async () => {
       const countResults = await Promise.allSettled(
         cards.map(async (card) => {
           try {
-            const response = await axios.get<ApiUserRecord[]>(
-              card.apiUrl,
-              {
-                signal: controller.signal,
-              },
-            );
+            const response = await axios.get<ApiUserRecord[]>(card.apiUrl, {
+              signal: controller.signal,
+            });
             if (!Array.isArray(response.data)) {
-              throw new Error(
-                `${card.title} did not return a valid list.`,
-              );
+              throw new Error(`${card.title} did not return a valid list.`);
             }
             return {
               id: card.id,
@@ -249,9 +244,7 @@ export default function ReportsPage() {
       controller.abort();
     };
   }, []);
-  const handleOpenDateCalendar = (
-    event: MouseEvent<HTMLElement>,
-  ) => {
+  const handleOpenDateCalendar = (event: MouseEvent<HTMLElement>) => {
     setDateAnchorEl(event.currentTarget);
   };
   const handleCloseDateCalendar = () => {
@@ -285,12 +278,13 @@ export default function ReportsPage() {
       setError("There are no records available to download.");
       return;
     }
-    const csvHeader = ["ID", "Name", "Email Address", "Role"];
+    const csvHeader = ["ID", "Name", "Email Address", "Role", "Created At"];
     const csvRows = filteredRows.map((row) => [
       row.id,
       row.name,
       row.email,
       row.role,
+      row.createdAt,
     ]);
     const escapeCsvValue = (value: unknown) =>
       `"${String(value ?? "").replace(/"/g, '""')}"`;
@@ -303,8 +297,9 @@ export default function ReportsPage() {
     const csvUrl = URL.createObjectURL(csvBlob);
     const downloadLink = document.createElement("a");
     downloadLink.href = csvUrl;
-    downloadLink.download = `${selectedCardTitle || "reports"
-      }-${dayjs().format("YYYY-MM-DD")}.csv`;
+    downloadLink.download = `${
+      selectedCardTitle || "reports"
+    }-${dayjs().format("YYYY-MM-DD")}.csv`;
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
@@ -315,16 +310,14 @@ export default function ReportsPage() {
       setSelectedCard(card.id);
       setSelectedCardTitle(card.title);
       setSearchText("");
+      setStartDate(null);
+      setEndDate(null);
       setRows([]);
       setError(null);
       setLoading(true);
-      const response = await axios.get<ApiUserRecord[]>(
-        card.apiUrl,
-      );
+      const response = await axios.get<ApiUserRecord[]>(card.apiUrl);
       if (!Array.isArray(response.data)) {
-        throw new Error(
-          "The API response is not a valid user list.",
-        );
+        throw new Error("The API response is not a valid user list.");
       }
       const formattedRows: ApiUserRecord[] = response.data.map(
         (user, index) => ({
@@ -333,8 +326,10 @@ export default function ReportsPage() {
           email: user.email?.trim() || "-",
           role: user.role?.trim() || "CUSTOMER",
           password: user.password,
+          createdAt: user.createdAt,
         }),
       );
+      console.log(formattedRows, "formattedRows");
       setRows(formattedRows);
     } catch (caughtError: unknown) {
       setRows([]);
@@ -346,13 +341,11 @@ export default function ReportsPage() {
         } else {
           const apiMessage =
             typeof caughtError.response.data === "object" &&
-              caughtError.response.data !== null &&
-              "message" in caughtError.response.data
+            caughtError.response.data !== null &&
+            "message" in caughtError.response.data
               ? String(caughtError.response.data.message)
               : null;
-          setError(
-            apiMessage || "Unable to load report records.",
-          );
+          setError(apiMessage || "Unable to load report records.");
         }
       } else if (caughtError instanceof Error) {
         setError(caughtError.message);
@@ -364,23 +357,31 @@ export default function ReportsPage() {
     }
   };
   const filteredRows = useMemo(() => {
-    const normalizedSearch = searchText.trim().toLowerCase();
-    if (!normalizedSearch) {
-      return rows;
-    }
-    return rows.filter((user) => {
-      const normalizedName = String(
-        user.name ?? "",
-      ).toLowerCase();
-      const normalizedEmail = String(
-        user.email ?? "",
-      ).toLowerCase();
+    return rows.filter((row) => {
+      const matchesSearch =
+        row.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        row.email.toLowerCase().includes(searchText.toLowerCase());
+      if (!matchesSearch) {
+        return false;
+      }
+      if (!startDate || !endDate) {
+        return true;
+      }
+
+      console.log("Start:", startDate?.format("YYYY-MM-DD"));
+      console.log("End:", endDate?.format("YYYY-MM-DD"));
+      console.log("Rows:", rows);
+      rows.forEach((row) => {
+        console.log(row.name, row.createdAt);
+      });
+
+      const recordDate = dayjs(row.createdAt);
       return (
-        normalizedName.includes(normalizedSearch) ||
-        normalizedEmail.includes(normalizedSearch)
+        !recordDate.isBefore(startDate.startOf("day")) &&
+        !recordDate.isAfter(endDate.endOf("day"))
       );
     });
-  }, [rows, searchText]);
+  }, [rows, searchText, startDate, endDate]);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box
@@ -458,12 +459,10 @@ export default function ReportsPage() {
                 border: "1px solid #DCE3EC",
                 borderRadius: "18px",
                 boxShadow: "0 2px 6px rgba(15, 23, 42, 0.08)",
-                transition:
-                  "border-color 0.2s ease, box-shadow 0.2s ease",
+                transition: "border-color 0.2s ease, box-shadow 0.2s ease",
                 "&:hover": {
                   borderColor: "#9FCFD0",
-                  boxShadow:
-                    "0 4px 12px rgba(15, 23, 42, 0.1)",
+                  boxShadow: "0 4px 12px rgba(15, 23, 42, 0.1)",
                 },
                 "&:focus-visible": {
                   outline: "3px solid rgba(0, 137, 123, 0.2)",
@@ -490,9 +489,7 @@ export default function ReportsPage() {
                   whiteSpace: "nowrap",
                 }}
               >
-                {startDate
-                  ? startDate.format("DD MMM YYYY")
-                  : "Start date"}
+                {startDate ? startDate.format("DD MMM YYYY") : "Start date"}
               </Typography>
               <Typography
                 component="span"
@@ -516,9 +513,7 @@ export default function ReportsPage() {
                   whiteSpace: "nowrap",
                 }}
               >
-                {endDate
-                  ? endDate.format("DD MMM YYYY")
-                  : "End date"}
+                {endDate ? endDate.format("DD MMM YYYY") : "End date"}
               </Typography>
               <CalendarMonthOutlinedIcon
                 sx={{
@@ -538,9 +533,7 @@ export default function ReportsPage() {
                   width: 50,
                   height: 50,
                   color: "#007F7C",
-                  backgroundColor: filterEnabled
-                    ? "#E6F7F5"
-                    : "#FFFFFF",
+                  backgroundColor: filterEnabled ? "#E6F7F5" : "#FFFFFF",
                   border: "1px solid #9DD4D3",
                   borderRadius: "10px",
                   "&:hover": {
@@ -575,9 +568,7 @@ export default function ReportsPage() {
                     },
                   }}
                 >
-                  <FileDownloadOutlinedIcon
-                    sx={{ fontSize: 25 }}
-                  />
+                  <FileDownloadOutlinedIcon sx={{ fontSize: 25 }} />
                 </IconButton>
               </span>
             </Tooltip>
@@ -604,8 +595,7 @@ export default function ReportsPage() {
                 maxWidth: "calc(100vw - 24px)",
                 borderRadius: "16px",
                 border: "1px solid #E2E8F0",
-                boxShadow:
-                  "0 14px 35px rgba(15, 23, 42, 0.16)",
+                boxShadow: "0 14px 35px rgba(15, 23, 42, 0.16)",
               },
             },
           }}
@@ -841,9 +831,7 @@ export default function ReportsPage() {
                         textAlign: "center",
                       }}
                     >
-                      {cardCountLoading[card.id]
-                        ? "..."
-                        : cardCounts[card.id]}
+                      {cardCountLoading[card.id] ? "..." : cardCounts[card.id]}
                     </Box>
                   </Box>
                 </Box>
@@ -918,9 +906,7 @@ export default function ReportsPage() {
               </Box>
               <TextField
                 value={searchText}
-                onChange={(event) =>
-                  setSearchText(event.target.value)
-                }
+                onChange={(event) => setSearchText(event.target.value)}
                 placeholder="Search by name or email"
                 size="small"
                 disabled={loading}
@@ -928,9 +914,7 @@ export default function ReportsPage() {
                   input: {
                     startAdornment: (
                       <InputAdornment position="start">
-                        <SearchRoundedIcon
-                          sx={{ color: "#64748B" }}
-                        />
+                        <SearchRoundedIcon sx={{ color: "#64748B" }} />
                       </InputAdornment>
                     ),
                   },
