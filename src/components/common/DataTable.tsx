@@ -86,7 +86,7 @@ function DataTable({
           border: 0,
           minHeight: 420,
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: "#f8fafc",
+            backgroundColor: "#f8fafcb8",
             color: "#0f172a",
             borderBottom: "1px solid #e2e8f0",
           },

@@ -1,62 +1,3 @@
-// import { NavLink, useNavigate } from "react-router-dom";
-// import { useAppDispatch, useAppSelector } from "../../app/store";
-// import { logout } from "../../features/auth/authSlice";
-
-// function Navbar() {
-//   const dispatch = useAppDispatch();
-//   const navigate = useNavigate();
-//   const userEmail = useAppSelector((state) => state.auth.userEmail);
-//   const handleLogout = () => {
-// dispatch(logout());
-// navigate("/login", {
-//   replace: true,
-// });
-//   };
-//   return (
-//     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white shadow-sm">
-//       <div className="mx-auto flex min-h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-//         <div className="flex items-center gap-8">
-//           {/* <NavLink
-//                         to="/files"
-//                         className="text-xl font-bold text-blue-600"
-//                     >
-//                         File Portal
-//                     </NavLink> */}
-//           <nav className="hidden sm:block">
-//             <NavLink
-//               to="/files"
-//               className={({ isActive }) =>
-//                 `rounded-md px-3 py-2 text-sm font-medium transition ${
-//                   isActive
-//                     ? "bg-blue-50 text-blue-700"
-//                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-//                 }`
-//               }
-//             >
-//               Files
-//             </NavLink>
-//           </nav>
-//         </div>
-//         <div className="flex items-center gap-4">
-//           {userEmail && (
-//             <span className="hidden max-w-48 truncate text-sm text-slate-600 md:block">
-//               {userEmail}
-//             </span>
-//           )}
-//           <button
-//             type="button"
-//             onClick={handleLogout}
-//             className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
-//           >
-//             Logouttt
-//           </button>
-//         </div>
-//       </div>
-//     </header>
-//   );
-// }
-// export default Navbar;
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../src/app/hooks";
@@ -72,7 +13,9 @@ import {
   Divider,
 } from "@mui/material";
 
-// import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import Badge from "@mui/material/Badge";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 export default function Header() {
   const user = useAppSelector((state) => state.auth.user);
@@ -101,28 +44,150 @@ export default function Header() {
   return (
     <Box
       sx={{
-        height: 70,
-        px: 3,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        bgcolor: "#fff",
-        borderBottom: "1px solid #e2e8f0",
+        bgcolor: "#e7f5f7",
       }}
     >
-      <Typography variant="h6" fontWeight={700}>
-        {/* Banking Portal */}
-      </Typography>
+      <Box
+        className="p-3"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+        }}
+      >
+        <Typography variant="h6" fontWeight={700}>
+          {/* Banking Portal */}
+        </Typography>
 
-      <Box>
-        <IconButton onClick={handleProfileClick}>
-          {/* <Avatar
-            sx={{
-              bgcolor: "#006D6F",
+        {/* Right Side */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            ml: "auto",
+          }}
+        >
+          <IconButton>
+            <Badge badgeContent={3} color="error">
+              <NotificationsNoneIcon
+                sx={{
+                  fontSize: 35, // increase size
+                  color: "#006D6F",
+                }}
+              />
+            </Badge>
+          </IconButton>
+          <IconButton onClick={handleProfileClick}>
+            <Avatar
+              sx={{
+                bgcolor: "#006D6F",
+              }}
+            >
+              {user?.name
+                ?.split(" ")
+                .map((word) => word.charAt(0))
+                .join("")
+                .toUpperCase()}
+            </Avatar>
+            <KeyboardArrowDownIcon
+              sx={{
+                color: "#006D6F",
+                transition: "0.2s",
+                transform: open ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            />
+          </IconButton>
+          <Menu
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            PaperProps={{
+              sx: {
+                width: 240,
+                borderRadius: 2,
+                mt: 1,
+                boxShadow: "0 8px 24px rgba(0,0,0,0.15)",
+                overflow: "hidden",
+              },
             }}
           >
-            <AccountCircleIcon />
-          </Avatar> */}
+            {/* User Details */}
+            <Box
+              sx={{
+                px: 3,
+                py: 2,
+                backgroundColor: "#F8F9FA",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontSize: "1.1rem",
+                  fontWeight: 500,
+                  color: "#666",
+                }}
+              >
+                {user?.name}
+              </Typography>
+
+              <Typography
+                sx={{
+                  mt: 1,
+                  fontSize: "1rem",
+                  color: "#8a8a8a",
+                }}
+              >
+                {user?.email}
+              </Typography>
+            </Box>
+
+            <Divider />
+
+            {/* Logout */}
+            <MenuItem
+              onClick={handleLogout}
+              sx={{
+                py: 2,
+                px: 3,
+                fontSize: "1.1rem",
+                color: "#222",
+
+                "&:hover": {
+                  backgroundColor: "#F5F5F5",
+                },
+              }}
+            >
+              Logout
+            </MenuItem>
+          </Menu>
+        </Box>
+      </Box>
+      <Divider color="#e7f5f7"></Divider>
+      {/* <Box
+        sx={{
+          ml: "auto",
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+         
+        }}
+      >
+       
+        <IconButton
+          sx={{
+            color: "#006D6F",
+
+            "&:hover": {
+              bgcolor: "#EAF4F5",
+            },
+          }}
+        >
+          <NotificationsNoneIcon />
+        </IconButton>
+
+        
+        <IconButton onClick={handleProfileClick}>
           <Avatar
             sx={{
               bgcolor: "#006D6F",
@@ -139,10 +204,12 @@ export default function Header() {
         <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
           <MenuItem disabled>{user?.name}</MenuItem>
           <MenuItem disabled>{user?.email}</MenuItem>
+
           <Divider />
+
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

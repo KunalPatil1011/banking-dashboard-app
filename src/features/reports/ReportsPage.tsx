@@ -105,7 +105,7 @@ const cards: ReportCard[] = [
       "https://6aa26491ccb3db9689a66ef8.mockapi.io/api/response/bot/users",
   },
 ];
-const columns: GridColDef<ApiUserRecord>[] = [
+const baseColumns: GridColDef<ApiUserRecord>[] = [
   {
     field: "id",
     headerName: "ID",
@@ -130,52 +130,86 @@ const columns: GridColDef<ApiUserRecord>[] = [
     flex: 0.5,
   },
   {
-    field: "actions",
-    headerName: "Actions",
-    minWidth: 220,
-    sortable: false,
-    filterable: false,
-
-    renderCell: () => (
-      <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
-        {/* <Button
-          variant="contained"
-          size="small"
-          sx={{
-            bgcolor: "#10B981",
-
-            "&:hover": {
-              bgcolor: "#059669",
-            },
-          }}
-        >
-          Approve
-        </Button>
-
-        <Button
-          variant="contained"
-          size="small"
-          sx={{
-            bgcolor: "#EF4444",
-
-            "&:hover": {
-              bgcolor: "#DC2626",
-            },
-          }}
-        >
-          Reject
-        </Button> */}
-        <Button variant="outlined" color="success" size="small">
-          Approve
-        </Button>
-
-        <Button variant="outlined" color="error" size="small">
-          Reject
-        </Button>
-      </Stack>
-    ),
+    field: "createdAt",
+    headerName: "Created Date",
+    minWidth: 150,
+    flex: 0.5,
   },
+  // {
+  //   field: "actions",
+  //   headerName: "Actions",
+  //   minWidth: 220,
+  //   sortable: false,
+  //   filterable: false,
+
+  //   renderCell: () => (
+  //     <Stack direction="row" spacing={1} sx={{ mt: 0.5 }}>
+  //       {/* <Button
+  //         variant="contained"
+  //         size="small"
+  //         sx={{
+  //           bgcolor: "#10B981",
+
+  //           "&:hover": {
+  //             bgcolor: "#059669",
+  //           },
+  //         }}
+  //       >
+  //         Approve
+  //       </Button>
+
+  //       <Button
+  //         variant="contained"
+  //         size="small"
+  //         sx={{
+  //           bgcolor: "#EF4444",
+
+  //           "&:hover": {
+  //             bgcolor: "#DC2626",
+  //           },
+  //         }}
+  //       >
+  //         Reject
+  //       </Button> */}
+  //       <Button variant="outlined" color="success" size="small">
+  //         Approve
+  //       </Button>
+
+  //       <Button variant="outlined" color="error" size="small">
+  //         Reject
+  //       </Button>
+  //     </Stack>
+  //   ),
+  // },
 ];
+
+const actionsColumn: GridColDef<ApiUserRecord> = {
+  field: "actions",
+  headerName: "Actions",
+  minWidth: 220,
+  sortable: false,
+  filterable: false,
+  disableColumnMenu: true,
+
+  renderCell: () => (
+    <Stack
+      direction="row"
+      spacing={1}
+      sx={{
+        height: "100%",
+        alignItems: "center",
+      }}
+    >
+      <Button variant="outlined" color="success" size="small">
+        Approve
+      </Button>
+
+      <Button variant="outlined" color="error" size="small">
+        Reject
+      </Button>
+    </Stack>
+  ),
+};
 export default function ReportsPage() {
   const [selectedCard, setSelectedCard] = useState<CardId | null>(null);
   const [selectedCardTitle, setSelectedCardTitle] = useState("");
@@ -202,6 +236,15 @@ export default function ReportsPage() {
   // const [searchText, setSearchText] = useState("");
   const [startDate, setStartDate] = useState<Dayjs | null>(null);
   const [endDate, setEndDate] = useState<Dayjs | null>(null);
+
+  const columns = useMemo<GridColDef<ApiUserRecord>[]>(() => {
+    if (selectedCard === "processed") {
+      return [...baseColumns, actionsColumn];
+    }
+
+    return baseColumns;
+  }, [selectedCard]);
+  ``;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -284,7 +327,7 @@ export default function ReportsPage() {
       row.name,
       row.email,
       row.role,
-      row.createdAt,
+      dayjs(row.createdAt).format("YYYY-MM-DD"),
     ]);
     const escapeCsvValue = (value: unknown) =>
       `"${String(value ?? "").replace(/"/g, '""')}"`;
@@ -385,9 +428,11 @@ export default function ReportsPage() {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box
+        className="h-full min-h-[calc(100vh-140px)] rounded-xl p-6"
         sx={{
           width: "100%",
           color: "#081A3A",
+          bgcolor: "#e7f5f7",
         }}
       >
         {/* Header */}
@@ -412,8 +457,8 @@ export default function ReportsPage() {
             sx={{
               color: "#081A3A",
               fontSize: {
-                xs: "2rem",
-                md: "2.75rem",
+                xs: "1rem",
+                md: "2.00rem",
               },
               lineHeight: 1.15,
               fontWeight: 700,

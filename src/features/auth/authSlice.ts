@@ -5,13 +5,39 @@ import { loginApi } from "../../services/authApi";
 // meaning No user logged in
 // Suppose user enter Dashboard
 // Protected routes execute
+
+const storedUser = localStorage.getItem("user");
+const storedToken = localStorage.getItem("token");
+
+// const initialState: AuthState = {
+//   user: storedUser ? JSON.parse(storedUser) : null,
+//   token: storedToken,
+//   isAuthenticated: !!storedToken,
+//   isLoading: false,
+//   error: null,
+// };
+
+// testing purpose we use hardcoded OAuth
 const initialState: AuthState = {
-  user: null,
-  token: null,
-  isAuthenticated: false,
+  isAuthenticated: true,
+  user: {
+    id: 1,
+    name: "Kunal Patil",
+    email: "kunal@bank.com",
+    role: "ADMIN",
+  },
+  token: "mock-oauth-token",
   isLoading: false,
   error: null,
 };
+
+// const initialState: AuthState = {
+//   user: null,
+//   token: null,
+//   isAuthenticated: false,
+//   isLoading: false,
+//   error: null,
+// };
 
 // execute when user enter a value and dispatch value
 export const loginUser = createAsyncThunk<
@@ -41,6 +67,9 @@ const authSlice = createSlice({
 
   reducers: {
     logout: (state) => {
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
@@ -71,6 +100,9 @@ const authSlice = createSlice({
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.error = null;
+
+        localStorage.setItem("user", JSON.stringify(action.payload.user));
+        localStorage.setItem("token", action.payload.token);
       })
       // Store becomes:
       //       {

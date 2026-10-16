@@ -1,4 +1,6 @@
 import { NavLink } from "react-router-dom";
+import { useAppSelector } from "../../../src/app/hooks";
+
 const menuItems = [
   {
     path: "/dashboard",
@@ -17,6 +19,8 @@ const menuItems = [
   },
 ];
 export default function Sidebar() {
+  const user = useAppSelector((state) => state.auth.user);
+
   return (
     <aside className="w-64 bg-[#005e60] min-h-screen">
       <div className="flex flex-col h-full">
@@ -55,7 +59,7 @@ export default function Sidebar() {
           ))}
         </nav>
         <div className="p-4 border-t border-[#004d4f]">
-          <p className="text-xs text-slate-400 text-center">GE User</p>
+          <p className="text-xs text-slate-400 text-center">{user?.name}</p>
         </div>
       </div>
     </aside>

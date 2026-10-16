@@ -1,10 +1,12 @@
 export default function DashboardPage() {
-    return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
-                <p className="text-slate-600 mt-1">Welcome to your dashboard overview</p>
-            </div>
-        </div>
-    );
+  return (
+    <div
+      className="h-full min-h-[calc(100vh-140px)] rounded-xl p-6"
+      style={{ backgroundColor: "#e7f5f7" }}
+    >
+      <h1 className="text-2xl font-bold text-slate-900">Dashboard</h1>
+
+      <p className="mt-1 text-slate-600">Welcome to your dashboard overview</p>
+    </div>
+  );
 }
